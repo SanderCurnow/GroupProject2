@@ -4,7 +4,7 @@ import scipy
 import math
 import numpy as np
 import matplotlib.pyplot as plt
-
+from scipy.sparse.linalg import spsolve
 from scipy.sparse import csc_matrix
 
 
@@ -37,8 +37,10 @@ def setup(n):
     return A, b
 
 # Example usage
-n = 10 # Example number of intervals
+k = 2
+n = 2 ** (k + 1) # Example number of intervals
 A, b = setup(n)
+# print(type(A))
 np.set_printoptions(precision=20, suppress=False, threshold=200, linewidth=400, formatter={'float': '{: 0.20f}'.format})
 # print("A:", A.toarray())  # Convert sparse matrix A to a dense matrix for printing
 # print("b:", b)
@@ -48,9 +50,11 @@ np.set_printoptions(precision=20, suppress=False, threshold=200, linewidth=400, 
 
 # Note: There's no direct P matrix returned by splu. The permutation matrices can be accessed
 # through the `perm_c` and `perm_r` attributes for column and row permutations respectively
-P, L, U = scipy.linalg.lu(A.toarray())
-y = scipy.linalg.solve_triangular(L, np.dot(P, b), lower=True)
-x = scipy.linalg.solve_triangular(U, y)
+# P, L, U = scipy.linalg.lu(A.toarray())
+# y = scipy.linalg.solve_triangular(L, np.dot(P, b), lower=True)
+# x = scipy.linalg.solve_triangular(U, y)
+
+x = spsolve(A, b)
 
 print("Solution x:", x)
 
@@ -83,12 +87,30 @@ print("True Solution true_x: ", true_x)
 
 # print (list(zip(x, true_x)))
 
-num = np.arange(1, n, 1)
+# num = np.arange(1, n, 1)
 
+num = np.linspace(0, L, n+1)
+# num = num / n
+
+ext_x = np.insert(x, [0, len(x)], 0.0)
 # Plot the first vector
-plt.plot(num, x, label='x', color='blue')
+plt.plot(num, ext_x, label='w(x)', color='blue')
 
+ext_true_x = np.insert(true_x, [0, len(true_x)], 0.0)
 # Plot the second vector
-plt.plot(num, true_x, label='true_x', color='red')
+plt.plot(num, ext_true_x, label='true w(x)', color='red')
+
+# Add annotations
+# for i in range(len(x)):
+    # plt.text(x[i], y1[i], f'({x[i]}, {y1[i]:.2f})', fontsize=8, color='blue', ha='right')
+    # plt.text(x[i], y2[i], f'({x[i]}, {y2[i]:.2f})', fontsize=8, color='red', ha='right')
+
+# Add legend
+plt.legend()
+
+# Add labels and title
+plt.xlabel('x')
+plt.ylabel('y')
+plt.title('Plot of true and approximate deflection of beam (k = ' + str(k) + ", n = " + str(n) + ")")
 
 plt.show()
