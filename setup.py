@@ -6,6 +6,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from scipy.sparse.linalg import spsolve
 from scipy.sparse import csc_matrix
+from scipy.sparse.linalg import inv
 
 
 def setup(n):
@@ -55,14 +56,33 @@ def TrueSolutionWithParams(x, L, q, E, S, I):
     return c1 * math.exp(a*x) + c2 * math.exp(-1*a*x) + b*x*(x-L) + c
 
 # Example usage
-for k in range(1,3):
+m = 21
+colour = (1,0,0)
+KN_list = []
+E_list = []
+for k in range(1,m):
     n = 2 ** (k + 1) # Example number of intervals
+
     A, b = setup(n)
+
+    norm_A = np.max(np.abs(A).sum(axis=1))
+    norm_inv_A = np.max(np.abs(inv(A)).sum(axis=1))
+
+    KN_list.append(norm_A*norm_inv_A)
+
+
     np.set_printoptions(precision=20, suppress=False, threshold=200, linewidth=400, formatter={'float': '{: 0.20f}'.format})
 
     x = spsolve(A, b)
+    
 
     true_x = np.vectorize(TrueSolution)((np.arange(1, n) * (L / n)))
+
+    err = np.abs(true_x - x)
+    middle_index = len(err) // 2
+    middle_entry = err[middle_index]
+
+    E_list.append(middle_entry)
     # print("True Solution true_x: ", true_x)
 
     num = np.linspace(0, L, n+1)
@@ -90,7 +110,7 @@ for k in range(1,3):
         plt.title('Plot of true and approximate deflection of beam (k = ' + str(k) + ", n = " + str(n) + ")")
 
         plt.show()
-    else: 
+    elif False: 
         plt.clf()
         plt.plot(num, np.abs(ext_true_x - ext_x), label='error, |w(x) - true w(x)|', color='red')
 
@@ -106,6 +126,25 @@ for k in range(1,3):
     # plt.show()
         plt.savefig(f'error_{k}.png')
 
+    elif True:
+        colour = (colour[0] - 1/m, colour[1] + 1/m, colour[2])
+        plt.yscale('log')
+        plt.plot(num, np.abs(ext_true_x - ext_x), color=colour)
+        
+        # Add legend
+        # plt.legend()
+
+        # Add labels and title
+        plt.xlabel('x')
+        plt.ylabel('y')
+        plt.title('Log errors, red is low k')
+        # print(len('Plot of error between true and approximate deflection of beam'))
+        
+plt.show()
+        # plt.savefig(f'log_error_{k}.png')
+
+print(E_list)
+print(KN_list)
 
 
 
