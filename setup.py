@@ -56,7 +56,7 @@ def TrueSolutionWithParams(x, L, q, E, S, I):
     return c1 * math.exp(a*x) + c2 * math.exp(-1*a*x) + b*x*(x-L) + c
 
 # Example usage
-m = 21
+m = 14
 colour = (1,0,0)
 KN_list = []
 E_list = []
@@ -140,7 +140,7 @@ for k in range(1,m):
         plt.title('Log errors, red is low k')
         # print(len('Plot of error between true and approximate deflection of beam'))
         
-plt.show()
+# plt.show()
         # plt.savefig(f'log_error_{k}.png')
 
 print(E_list)
