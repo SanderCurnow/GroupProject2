@@ -60,7 +60,7 @@ m = 14
 colour = (1,0,0)
 KN_list = []
 E_list = []
-for k in range(1,m):
+for k in range(1,21):
     n = 2 ** (k + 1) # Example number of intervals
 
     A, b = setup(n)
@@ -105,12 +105,12 @@ for k in range(1,m):
         plt.legend()
 
         # Add labels and title
-        plt.xlabel('x')
-        plt.ylabel('y')
+        plt.xlabel('x (Distance from left side of bridge in inches)')
+        plt.ylabel('y (height in inches)')
         plt.title('Plot of true and approximate deflection of beam (k = ' + str(k) + ", n = " + str(n) + ")")
 
         plt.show()
-    elif False: 
+    elif True: 
         plt.clf()
         plt.plot(num, np.abs(ext_true_x - ext_x), label='error, |w(x) - true w(x)|', color='red')
 
@@ -118,8 +118,8 @@ for k in range(1,m):
         plt.legend()
 
         # Add labels and title
-        plt.xlabel('x')
-        plt.ylabel('y')
+        plt.xlabel('x (Distance from left side of bridge in inches)')
+        plt.ylabel('y (height in inches)')
         plt.title('Plot of error of approximation (k = ' + str(k) + ", n = " + str(n) + ")")
         # print(len('Plot of error between true and approximate deflection of beam'))
         
@@ -135,8 +135,8 @@ for k in range(1,m):
         # plt.legend()
 
         # Add labels and title
-        plt.xlabel('x')
-        plt.ylabel('y')
+        plt.xlabel('x (Distance from left side of bridge in inches)')
+        plt.ylabel('y (height in inches)')
         plt.title('Log errors, red is low k')
         # print(len('Plot of error between true and approximate deflection of beam'))
         
